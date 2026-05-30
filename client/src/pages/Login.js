@@ -1,21 +1,52 @@
+
+
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link ,useNavigate} from "react-router-dom";
 
 function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
 
-    if (!email || !password) {
-      alert("Please fill all fields");
-      return;
+  if (!email || !password) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  try {
+
+    const response = await fetch(
+      "http://localhost:5000/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email,
+          password
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert(data.message);
+      navigate("/dashboard");
+    } else {
+      alert(data.message);
     }
 
-    alert("Login Successful 🚀");
-  };
+  } catch (error) {
 
+    console.log(error);
+    alert("Server Error");
+
+  }
+};
   return (
 
     <div style={styles.container}>
@@ -128,33 +159,6 @@ const styles = {
 };
 
 export default Login;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
